@@ -212,7 +212,7 @@ final class _Poly1305Sink implements ByteConversionSink {
 
   @override
   void addSlice(covariant Uint8List chunk, int start, int end, bool isLast) {
-    add(chunk.sublist(start, end));
+    add(Uint8List.sublistView(chunk, start, end));
     if (isLast) close();
   }
 

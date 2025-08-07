@@ -77,7 +77,7 @@ final class ChaCha20 extends Converter<List<int>, List<int>> {
   /// The ChaCha20 block function is the core of the ChaCha20 algorithm.
   Uint8List chacha20Block() {
     _chacha20BlockRounds();
-    return Uint8List.fromList(_keystream);
+    return _keystream.asUnmodifiableView();
   }
 
   /// Performs the core rounds of the ChaCha20 block cipher.
@@ -206,7 +206,7 @@ final class _ChaCha20Sink implements ByteConversionSink {
 
   @override
   void addSlice(covariant Uint8List chunk, int start, int end, bool isLast) {
-    add(chunk.sublist(start, end));
+    add(Uint8List.sublistView(chunk, start, end));
     if (isLast) close();
   }
 
