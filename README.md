@@ -158,13 +158,12 @@ void process({
 import 'dart:typed_data';
 import 'package:chacha/poly1305.dart';
 
-Uint8List authenticateMessage({
+Uint8List generateMAC({
   required Uint8List message,
   required Uint8List key,
 }) {
-  Poly1305 poly1305 = Poly1305(key: key)
-  Uint8List tag = poly1305.convert(message);
-  // Use the tag for message verification
+  final Poly1305 poly1305 = Poly1305(key: key)
+  return poly1305.convert(message);
 }
 ```
 
