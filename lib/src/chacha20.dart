@@ -13,7 +13,12 @@ final class ChaCha20 extends Converter<List<int>, List<int>> {
   final Uint32List _state;
   final Uint8List _keystream;
 
-  const ChaCha20._(this._state, this._keystream);
+  int w00 = 00, w01 = 00, w02 = 00, w03 = 00;
+  int w04 = 00, w05 = 00, w06 = 00, w07 = 00;
+  int w08 = 00, w09 = 00, w10 = 00, w11 = 00;
+  int w12 = 00, w13 = 00, w14 = 00, w15 = 00;
+
+  ChaCha20._(this._state, this._keystream);
 
   /// Converts data using ChaCha20 as per RFC 8439.
   ///
@@ -82,10 +87,22 @@ final class ChaCha20 extends Converter<List<int>, List<int>> {
 
   /// Performs the core rounds of the ChaCha20 block cipher.
   void _chacha20BlockRounds() {
-    int w00 = _state[00], w01 = _state[01], w02 = _state[02], w03 = _state[03];
-    int w04 = _state[04], w05 = _state[05], w06 = _state[06], w07 = _state[07];
-    int w08 = _state[08], w09 = _state[09], w10 = _state[10], w11 = _state[11];
-    int w12 = _state[12], w13 = _state[13], w14 = _state[14], w15 = _state[15];
+    w00 = _state[00];
+    w01 = _state[01];
+    w02 = _state[02];
+    w03 = _state[03];
+    w04 = _state[04];
+    w05 = _state[05];
+    w06 = _state[06];
+    w07 = _state[07];
+    w08 = _state[08];
+    w09 = _state[09];
+    w10 = _state[10];
+    w11 = _state[11];
+    w12 = _state[12];
+    w13 = _state[13];
+    w14 = _state[14];
+    w15 = _state[15];
 
     for (int i = 0; i < 10; ++i) {
       /* Column rounds */
@@ -191,6 +208,15 @@ final class ChaCha20 extends Converter<List<int>, List<int>> {
     _state[30] = w14 + _state[14];
     _state[31] = w15 + _state[15];
   }
+
+  /// Securely clears the internal state from memory.
+  void close() {
+    w00 = w01 = w02 = w03 = 00;
+    w04 = w05 = w06 = w07 = 00;
+    w08 = w09 = w10 = w11 = 00;
+    w12 = w13 = w14 = w15 = 00;
+    _state.fillRange(0, 32, 0);
+  }
 }
 
 final class _ChaCha20Sink implements ByteConversionSink {
@@ -211,5 +237,8 @@ final class _ChaCha20Sink implements ByteConversionSink {
   }
 
   @override
-  void close() => _outputSink.close();
+  void close() {
+    _converter.close();
+    _outputSink.close();
+  }
 }
